@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Resume Analyzer</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+  </head>
+  <body>
+    <center>
+      <h1>Resume Analyzer</h1>
+      <h4>Analyze and rank resumes according to your job description</h4>
+    </center>
+    <div class="input-form">
+      <form action="/" method="post" enctype="multipart/form-data">
+        <label for="job_description">Upload Job Descriptions (PDF):</label>
+        <input
+          type="file"
+          name="job_description_files"
+          accept=".pdf"
+          multiple
+          required
+        />
+
+        <br />
+        <label for="resume_files">Upload Resumes (PDF):</label>
+        <input
+          type="file"
+          name="resume_files"
+          accept=".pdf"
+          multiple
+          required
+        />
+        <br />
+        <input type="submit" value="Analyze Resumes" />
+      </form>
+    </div>
+
+    <br />
+    {% if results %}
+    <div class="results">
+      <div class='download-results'>
+        <h2>Your results</h2>
+        <a
+          href="{{ url_for('download_csv') }}"
+          download="ranked_resumes.csv"
+          class="download-link"
+        >
+          Download results
+        </a>
+      </div>
+      <br/>
+      {% for jd in results %}
+      <p class="jd-name">{{ jd[0] }}<p>
+      <br/>
+      <table class="result-table">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Similarity</th>
+            <th>Filename</th>
+            <th>Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for result in jd[1] %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ result[0][0] }}</td>
+            <td>{{ result[1][0] }}</td>
+            <td>{{ result[2] }}</td>
+            <td>{{ result[3] }}</td>
+            <td>{{ result[4] }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <br/>
+      {% endfor %}
+      {% if results %}
+      <br />
+    </div>
+
+    {% endif %} {% endif %}
+  </body>
+</html>
