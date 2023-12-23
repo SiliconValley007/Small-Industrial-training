@@ -11,7 +11,7 @@ import os
 # import requests
 # import json
 # from categorize_resume import categorize
-from resume_parser import parseResume
+# from resume_parser import parseResume
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud
 import seaborn as sns
@@ -168,15 +168,15 @@ def index():
                 resume_vector = tfidf_vectorizer.transform([resume_text])
                 similarity = cosine_similarity(job_desc_vector, resume_vector)[0][0] * 100
                 resume_path = os.path.join("uploads/Resumes/", filename)
-                parsed_data = parseResume(resume_path)
-                ranked_resumes.append((names, emails, similarity, filename, parsed_data))
+                # parsed_data = parseResume(resume_path)
+                ranked_resumes.append((names, emails, similarity, filename))
 
             # Sort resumes by similarity score
             ranked_resumes.sort(key=lambda x: x[2], reverse=True)
             
             formatted_resumes = []
             for resume in ranked_resumes:
-                formatted_resumes.append((resume[0], resume[1], "{:.2f}%".format(resume[2]), resume[3], resume[4]))
+                formatted_resumes.append((resume[0], resume[1], "{:.2f}%".format(resume[2]), resume[3]))
                 similarity_scores.append(resume[2])
                 filenames.append(resume[3])
                 
@@ -192,6 +192,7 @@ def index():
 from flask import send_file
 
 
+# Will not work correctly for multiple job descriptions, as will not be able to format the output csv correctly
 @app.route("/download_csv")
 def download_csv():
     # Generate the CSV content
